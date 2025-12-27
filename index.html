@@ -108,19 +108,32 @@
       font-weight: bold;
       display: none;
       box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      z-index: 9999; /* ensure it floats above the blog */
+      z-index: 9999;
     }
 
     .money-ui span {
       margin-left: 6px;
       color: #fff;
     }
+
+    .money-float {
+      position: absolute;
+      color: green;
+      font-weight: bold;
+      animation: floatUp 1.5s forwards;
+      z-index: 10000;
+    }
+
+    @keyframes floatUp {
+      0% { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(-40px); }
+    }
   </style>
 </head>
 <body>
   <div class="money-ui" id="moneyUI">💰<span id="moneyAmount">$0.00</span></div>
 
-  <div class="blog-container">
+  <div class="blog-container" id="blogContainer">
     <h1>The Boring Cat Blog</h1>
     <div class="subtitle">sleep • suffering • small amounts of money</div>
 
@@ -151,6 +164,8 @@
     </div>
   </div>
 
+  <audio id="kachingSound" src="cash-register-kaching-376867 (1).mp3"></audio>
+
   <script>
     let money = 0;
 
@@ -159,6 +174,8 @@
     const postButton = document.getElementById("postButton");
     const moneyUI = document.getElementById("moneyUI");
     const moneyAmount = document.getElementById("moneyAmount");
+    const kaching = document.getElementById("kachingSound");
+    const blogContainer = document.getElementById("blogContainer");
 
     startButton.addEventListener("click", () => {
       gameUI.style.display = "block";
@@ -170,13 +187,30 @@
       }, 100);
     });
 
-    postButton.addEventListener("click", () => {
-      money += 0.2;
+    postButton.addEventListener("click", (e) => {
+      const amountEarned = 0.2;
+      money += amountEarned;
       moneyAmount.textContent = `$${money.toFixed(2)}`;
       moneyUI.style.display = "block";
 
       startButton.textContent = "Posted";
       postButton.textContent = "✎ Write New Blog";
+
+      // Play kaching sound
+      kaching.currentTime = 0;
+      kaching.play();
+
+      // Create floating text
+      const floatText = document.createElement('div');
+      floatText.className = 'money-float';
+      floatText.style.left = (e.clientX - blogContainer.offsetLeft) + 'px';
+      floatText.style.top = (e.clientY - blogContainer.offsetTop) + 'px';
+      floatText.textContent = `+$${amountEarned.toFixed(2)}`;
+      blogContainer.appendChild(floatText);
+
+      setTimeout(() => {
+        blogContainer.removeChild(floatText);
+      }, 1500);
     });
   </script>
 </body>
