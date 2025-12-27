@@ -55,7 +55,6 @@
       margin-bottom: 24px;
     }
 
-    .play-button,
     .post-button {
       display: block;
       width: 100%;
@@ -145,6 +144,7 @@
     document.addEventListener("DOMContentLoaded", () => {
       let money = 0;
       let isTyping = false;
+      let minutesPassed = 1;
 
       const moneyUI = document.getElementById("moneyUI");
       const moneyAmount = document.getElementById("moneyAmount");
@@ -158,6 +158,106 @@
         kaching.currentTime = 0;
         kaching.play();
       }
+
+    const blogPool = [
+`I Stared at a Wall for an Hour||It seemed ordinary at first, but slowly the wall revealed itself as something fascinating. I watched the texture, the shadows, and the faint marks like I could decipher a hidden language. Eventually, I walked away, feeling both wiser and slightly disappointed that the world refused to explain itself.`,
+`I Inspected Every Corner of the Room||No nook or cranny escaped my attention. I prowled silently, ears alert, sniffing the air like a detective on a crucial case. Even after concluding that nothing was amiss, I felt satisfied, as if the simple act of vigilance had warded off some invisible threat.`,
+`I Slept on Top of a Laptop||The warmth was irresistible, the hum a gentle lullaby. I stretched across the keyboard, pressing keys intermittently, unaware of the chaos I might cause. The human sighed, but I felt secure and important, knowing my presence is always meaningful, even if inconvenient.`,
+`I Ignored Someone on Purpose||They reached for me, expecting affection, but I turned away. My ears twitched in silent judgment, and I walked to a distant spot, leaving them guessing my mood. There is power in absence, subtle and commanding, and I savored it quietly.`,
+`I Sat in Front of a Moving Object||The robotic vacuum moved across the floor like an alien creature. I sat directly in its path, studying it with suspicion and curiosity. It beeped and changed direction, but I felt victorious, knowing I had asserted dominance through mere presence.`,
+`I Licked the Air Dramatically||I felt compelled to demonstrate my grooming ritual, even if there was no dirt or need. Each movement was deliberate, almost theatrical, as if announcing that I care about appearances, and the world should acknowledge it. By the time I finished, I was exhausted and pleased with my effort.`,
+`I Pondered Life on the Window Ledge||I perched on the narrow ledge, high above the floor, and watched the world outside with intensity. Trees swayed, birds hopped, and humans moved blindly below, oblivious to the insights I gleaned from my silent observations. The height offered perspective, and for a few precious minutes, I felt like a sage.`,
+`I Knocked Over a Plant, Regretted Nothing||The plant wobbled precariously before falling with a soft crash. I stared at it triumphantly, aware that some rules exist only to be tested. The human scolded, but I only blinked slowly, a silent reminder that curiosity and power are intertwined.`,
+`I Hissed at My Own Reflection||I approached the mirror cautiously, confronted by a rival who mimicked every movement. I hissed, tails flaring, and retreated strategically. It wasn’t fear; it was strategy, a subtle negotiation with a foe who would never submit.`,
+`I Sat on a Pile of Clean Laundry||The humans had washed and folded, but I claimed the warm stack as mine. My claws sank into the soft fabrics, mixing order with chaos effortlessly. They scolded, I purred, and the balance of power was temporarily restored in my favor.`,
+`I Pawed at Something Inexplicably||A pen rolled across the floor, and I felt compelled to intervene. Swatting, nudging, and chasing, I gave it meaning through attention alone. Minutes later, it rested harmlessly in a corner, but I had created significance out of nothing, and that felt important.`,
+`I Watched the Humans Eat, Judging Silently||They chewed, swallowed, and seemed oblivious to my disapproval. I observed every bite, noting techniques, smells, and flaws. When they finally glanced my way, I flicked my tail in judgment, proud of the silent authority my presence commands.`,
+`I Sensed Something Weird in the Air||The atmosphere was off, subtle vibrations that hinted at change. I prowled cautiously, ears forward, eyes sharp. By the time I relaxed, the world had shifted again, but my alertness remained, a testament to my constant vigilance.`,
+`I Knocked Something Off the Counter Again||The shiny object fell with a delicate clatter, my intent both deliberate and minor. I stared at it triumphantly as humans reacted. Small victories are crucial, and I had achieved one without compromise.`,
+`I Slept With My Tail Over My Face||Curling up tightly, I covered my nose with my own tail, the world becoming small and distant. I rested like this for hours, enjoying the simplicity of darkness, warmth, and complete control over my body. No one could reach me here, and I needed nothing more.`,
+`I Tried to Catch a Shadow||The moving silhouette on the wall intrigued me endlessly. I leapt, pawed, and sometimes collided with thin air, but the chase was its own reward. Each failure was minor, eclipsed by the thrill of engagement and the feeling that I had tried with vigor.`,
+`I Hated the Vacuum||Its noise was unbearable, its movement menacing. I crouched low, fur on end, assessing the situation with precision. Even after it retreated, I remained tense, convinced its return was imminent and my vigilance necessary.`,
+`I Stalked Someone Across the Room||They moved with oblivious grace, unaware of the tiny predator trailing silently behind. My paws were soft, my focus sharp, and every movement calculated. Even though I never pounced, the tension and anticipation were enough to thrill me fully.`,
+`I Claimed a Chair Without Permission||The seat was mine before anyone noticed. I stretched across it, bending to fit perfectly, asserting quiet dominance. When they tried to reclaim it, I refused to move, demonstrating that some battles are won by presence alone.`,
+`I Slept on the Keyboard Again||Its warmth drew me in, the keys pressing gently against my fur. I disrupted work with deliberate carelessness, a subtle reminder that my comfort outweighs all human productivity. They sighed, I purred, and the universe returned to balance.`,
+`I Watched the Rain from the Window||Droplets slid down the glass, and I felt both curiosity and melancholy. Each patter told a story I could not fully interpret, yet I lingered, captivated by the rhythm and mystery. The world seemed slower, softer, and I was fully aware of it all.`,
+`I Knocked Over the Water Glass||It tumbled from the edge, spilling silently across the table. I stared at the liquid, fascinated by its movement and sheen. No harm done, yet I felt a thrill of creation and minor disruption, entirely justified by my curiosity.`,
+`I Sat in the Sun Until My Eyes Hurt||The warmth was comforting, almost hypnotic. I closed my eyes, feeling every ray as though it carried secret knowledge. Eventually, I had to blink and shift, but the lingering sense of peace remained, small and precious.`,
+`I Ignored a Toy||It rolled near me, colorful and tempting, yet I resisted. I lay still, studying its shape and purpose with disdain. Ignoring something can be as powerful as claiming it, and I felt the satisfaction of control in deliberate inaction.`,
+`I Tried to Understand the Ceiling Fan||The rotating blades fascinated me, mysterious and unreachable. I leapt in vain, pawed the air, and then sat back, contemplating the limits of my power. Sometimes observation is all the mastery I need.`,
+`I Snuck Into a Closet||The darkness was deep, smelling faintly of fabric and secrets. I prowled carefully, testing boundaries and savoring the thrill of trespass. Hours later, I emerged triumphant, knowing that curiosity had been fully satisfied.`,
+`I Stared at My Own Tail||It moved unexpectedly, catching my eye in fleeting motion. I chased, pawed, and occasionally bit, caught in a loop of fascination and futility. Even after it eluded me, the satisfaction of engagement lingered quietly.`,
+`I Slept Across the Couch Cushions||No one had left me space, yet I claimed it all, spreading comfortably across every soft surface. Their protests were irrelevant; my comfort was paramount. Lying there, I felt a small, serene victory, unmatched by any other part of the day.`,
+`I Ignored the Human’s Call||They beckoned, they pleaded, and I walked the opposite direction with deliberate stubbornness. My disobedience was not malicious, just a statement of independence. The satisfaction of unbothered self-determination cannot be overstated.`,
+`I Watched a Bug Crawl||Its slow, careful movements were mesmerizing. I observed with intensity, imagining the tiny dramas of its life. By the time it disappeared under a crack, I felt both relieved and vaguely disappointed, as if the adventure had ended too soon.`,
+`I Refused a Snack||I sniffed it, turned, and walked away, demonstrating the subtle art of selective taste. My disinterest spoke volumes about dignity, standards, and the importance of refusing what is undeserving. The humans sighed, and I felt satisfied in quiet superiority.`,
+`I Slept in a Laundry Basket||The soft fabrics invited me, and I claimed them with abandon. Curled up, I felt a rare combination of safety and dominance. Even when disturbed, I refused to leave entirely, knowing my place had been earned.`,
+`I Prowled the Kitchen||The smells were intoxicating, mysterious, and promising. I moved silently, ears alert, tail flicking, ready for whatever might appear. The world seemed full of possibility, even if none of it materialized into something tangible.`,
+`I Screamed at an Empty Room||It was quiet, too quiet, and I needed acknowledgment. My loud meows filled the silence, asserting presence without expectation of response. Even when unanswered, my voice carried satisfaction: I had made the void aware of me.`,
+`I Sat on a Laptop Bag||Soft, dark, and slightly inconvenient, the bag became my throne. I pressed into it fully, claiming it for my purposes. When they tried to move me, I resisted gently, demonstrating that comfort is a right, not a request.`,
+`I Ignored the Catnip||The green, tempting herb lay before me, but I was uninterested. My disinterest felt like a statement, that attention must be earned, not given. They tried to entice me, but I remained unmoved, proud in my deliberate refusal.`,
+`I Slept With My Eyes Open Slightly||I wanted to rest but also remain aware of the room. Half-closed eyes allowed both vigilance and relaxation, a compromise that humans would never understand. I drifted between worlds, comforted by my own cunning.`,
+`I Knocked Something Off the Shelf for Fun||It slid slowly to the floor, and I watched intently, analyzing every motion. The human’s reaction was predictable, and I purred inwardly at the minor chaos I had caused. Moments like this remind me that small actions have profound satisfaction.`,
+`I Sat in Front of the Door||No one was leaving, yet I positioned myself strategically. Every movement of the doorknob became meaningful, every shadow suspicious. The world outside could wait; my command of this threshold was absolute.`,
+`I Slept on a Pile of Shoes||The smell, the textures, the proximity to humans — it was irresistible. I pressed myself into the heap, curling into an impossible shape, and felt complete. The humans protested, but in my eyes, I had created a perfect resting place, and no argument could overturn that victory.`,
+`I Sat in a Cardboard Box||The crinkly cardboard was my fortress, my private kingdom. I pressed my paws into the corners and purred with satisfaction, knowing no one could penetrate my sovereignty without invitation.`,
+`I Watched a Leaf Fall||Its descent was mesmerizing. I calculated its trajectory, leapt in vain, and then watched it rest. Nature’s small mysteries captivated me more than any toy.`,
+`I Ignored the Laser Pointer||The red dot danced across the floor, walls, and ceiling, but I refused to chase. Control over my reactions felt more rewarding than any fleeting game of light.`,
+`I Hid in the Laundry Hamper||Soft and dimly lit, the hamper was my hiding spot. I observed humans searching for me with keen interest, appreciating their confusion and my cunning.`,
+`I Sat on the TV Remote||The sleek device was warm, inviting, and slightly annoying for humans. I stretched across it fully, asserting dominance and comfort simultaneously.`,
+`I Watched My Shadow Move||As the light shifted, so did I. The ephemeral form on the wall fascinated me. I pounced, pawed, and studied, engaged with a reflection of myself that obeyed no commands.`,
+`I Knocked Over the Trash Can||The contents spilled across the floor. I sniffed, pawed, and rearranged with purpose. Minor chaos never felt so satisfying.`,
+`I Drank from the Sink||The cool water gurgled delightfully. I balanced precariously on the counter, lapped with precision, and left the human marveling at my skill.`,
+`I Curled in a Sunbeam||The warmth embraced me. I drifted to sleep, eyelids heavy, heart calm. No sound mattered beyond this perfect ray of light.`,
+`I Swatted at a Curtain||It moved unpredictably in the draft. I leapt, my paws batting, determined to conquer the flowing fabric.`,
+`I Climbed the Bookshelf||Every shelf offered a challenge. I balanced, leapt, and surveyed the room like a tiny, furred explorer. Heights brought clarity and satisfaction.`,
+`I Smelled Every Shoe||Each had its own scent, story, and history. My nose delved deeply, analyzing the life experiences of humans through their footwear.`,
+`I Ignored the Treats||They were deliciously aromatic, but I looked away. Self-control gave me a quiet power over expectation.`,
+`I Sat on the Keyboard Again||Warmth, familiarity, disruption—comfort trumped function. I pressed keys, observed reactions, and purred quietly.`,
+`I Knocked Over a Cup||It wobbled, fell, and spilled. Chaos was fleeting, harmless, and entirely mine.`,
+`I Hid Under the Bed||Shadows and dust surrounded me. Observing feet, objects, and movements provided endless entertainment.`,
+`I Sat in the Laundry Pile||Softness surrounded me. I pressed, kneaded, and claimed the heap as my own territory.`,
+`I Watched the Door||People came and went, oblivious to my silent monitoring. Every turn of the knob was significant.`,
+`I Tried to Catch My Tail||A small, futile endeavor, yet endlessly entertaining. Spin, pounce, bite—it was my own little loop of amusement.`,
+`I Napped on the Couch||The cushions molded to my body. Warmth, security, and contentment filled every muscle.`,
+`I Licked the Window||Condensation, smudges, fingerprints—they were all part of my tactile world. I left marks, a small signature on the glass.`,
+`I Ignored the Catnip Again||Green temptation lay before me, yet I remained uninterested. The choice was mine and mine alone.`,
+`I Jumped on the Counter||Perilous, high, and full of scrutiny, I claimed the ledge as my own without apology.`,
+`I Sat on the Papers||Documents, bills, notes—all were temporary objects. I redefined the space as mine with a single stretch.`,
+`I Observed the Bird Outside||Wings flapped, beaks pecked, humans moved. I processed it all, small but intensely aware.`,
+`I Curled in a Basket||Round, warm, cozy. The basket became a fortress, my resting domain.`,
+`I Pawed at a Fly||Tiny, buzzing, fleeting. I attacked, retreated, and analyzed the small invader’s behavior.`,
+`I Sat on the Laptop Bag||Again, a throne. Comfort, softness, inconvenience, all intertwined.`,
+`I Watched the Shadows Shift||Light changed, walls darkened, forms moved. I tracked everything with silent intensity.`,
+`I Knocked Over a Vase||Flowers scattered. The human’s exclamation was predictable. The joy of minor chaos endured.`,
+`I Stretched in the Sun||Arms out, back arched, eyes half-closed. Perfect serenity enveloped me.`,
+`I Jumped Into a Box||Cardboard, crinkly, inviting. A world of fun and mystery awaited inside.`,
+`I Sat on a Blanket||Soft layers, warmth, subtle scent of humans. The perfect resting place was found.`,
+`I Observed the Floor||Patterns, cracks, crumbs—they told stories I alone could interpret.`,
+`I Slept on the Couch||Full spread, sprawling. Human sighs irrelevant. Power asserted through presence alone.`,
+`I Ignored the Human Again||They called, coaxed, pleaded. I turned away, reinforcing the rules of autonomy.`,
+`I Pawed at a String||Dangling, teasing, invisible tension. Engagement was its own reward.`,
+`I Watched the Clock||Time ticked, I ignored deadlines. Observation was pure, analytical, complete.`,
+`I Sat on the Books||Knowledge towers ignored. I claimed comfort over learning.`,
+`I Hissed at a Shadow||Threat appeared, reaction quick, strategy executed. Victory felt subtle but real.`,
+`I Pounced on a Pillow||Soft, yielding, satisfying. Attack and conquest in miniature.`,
+`I Observed the Ceiling||Fans, lights, moving dust. My world, small yet complete.`,
+`I Sat in Front of the Window||Outside, world alive. Inside, observer remained vigilant.`,
+`I Hid in a Box||Dark, small, mine. Perfect control, quiet contemplation.`,
+`I Knelt on the Keyboard||Warm keys, human frustration. Power and comfort combined.`,
+`I Sniffed Every Corner||Nothing escaped my attention. Awareness was supreme.`,
+`I Drank from a Cup||Cool water, small victory. Human astonishment, my amusement.`,
+`I Sat on the Paper||Letters, notes, unimportant. I redefined space, asserted dominance.`,
+`I Watched the TV||Moving images, light and sound. Observation, no engagement, full knowledge.`,
+`I Curled on the Cushion||Small, warm, complete. Nothing else mattered.`,
+`I Licked a Finger||Human scent, trace aroma, tactile delight. Attention earned, mine alone.`,
+`I Sat on the Plant||Leaves brushed fur, human shock. Small chaos, fully mine.`,
+`I Observed a Bug||Tiny movements, careful analysis. The world was full of detail.`,
+`I Slept in the Box||Enclosed, quiet, perfect. Peace achieved.`
+];
+
+
+      let unusedBlogs = [...blogPool];
 
       async function typeBlog(post, titleText, bodyText, metaText) {
         const title = document.createElement("div");
@@ -194,6 +294,14 @@
         await typeText(content, bodyText);
       }
 
+      function getRandomBlog() {
+        if (unusedBlogs.length === 0) unusedBlogs = [...blogPool];
+        const index = Math.floor(Math.random() * unusedBlogs.length);
+        const blog = unusedBlogs.splice(index, 1)[0];
+        const [title, body] = blog.split('||');
+        return { title, body };
+      }
+
       blogContainer.addEventListener("click", async (e) => {
         if (!e.target.classList.contains("post-button")) return;
         const postButton = e.target;
@@ -207,7 +315,7 @@
 
         if (postButton.dataset.mode === "first") {
           const titleText = "Where to Find the Best Catnip (Trust Me)";
-          const bodyText = "Everyone keeps asking me where I get my catnip. The truth is I don’t. I once saw some behind the convenience store but there was a dog there and I panicked. If you absolutely must try, I recommend checking under couches, in forgotten drawers, or stealing it emotionally from other cats. Do not ask me how that works. I am tired.";
+          const bodyText = "Everyone keeps asking me where I get my catnip. The truth is I don’t. I once saw some behind the convenience store, but there was a dog there and I panicked. If you absolutely must try, I recommend checking under couches, in forgotten drawers, or stealing it emotionally from other cats. Do not ask me how that works. I am tired.";
           await typeBlog(post, titleText, bodyText, "Posted by Cat • 3:12 AM • no comments");
           earnMoney(0.2);
           postButton.textContent = "Posted";
@@ -217,15 +325,15 @@
           newWriteButton.className = "post-button";
           newWriteButton.textContent = "✎ Write New Blog";
           newWriteButton.dataset.mode = "write";
-          newWriteButton.dataset.final = "true"; // mark as final
           newWriteButton.disabled = false;
           blogContainer.appendChild(newWriteButton);
           newWriteButton.scrollIntoView({ behavior: "smooth", block: "end" });
         } else if (postButton.dataset.mode === "write") {
-          const titleText = "Where I Sat Today";
-          const bodyText = "Today I sat on the back of the couch where the fabric is a little thinner and smells like the sun. It was uncomfortable at first, but I stayed anyway because leaving would mean admitting I chose wrong. After a while, the discomfort faded and I forgot why I was there, which is usually how things work out for me.";
-          const metaText = "Posted by Cat • 3:41 AM • no comments";
-          await typeBlog(post, titleText, bodyText, metaText);
+          const { title, body } = getRandomBlog();
+          const metaText = `Posted by Cat • ${minutesPassed} minutes ago • no comments`;
+          await typeBlog(post, title, body, metaText);
+          minutesPassed = Math.min(minutesPassed + 1, 60);
+
           postButton.textContent = "✎ Post Blog";
           postButton.dataset.mode = "post";
         } else if (postButton.dataset.mode === "post") {
@@ -237,10 +345,7 @@
           newWriteButton.className = "post-button";
           newWriteButton.textContent = "✎ Write New Blog";
           newWriteButton.dataset.mode = "write";
-          // Disable final button immediately
-          if (postButton.dataset.final === "true") {
-            newWriteButton.disabled = true;
-          }
+          newWriteButton.disabled = false;
           blogContainer.appendChild(newWriteButton);
           newWriteButton.scrollIntoView({ behavior: "smooth", block: "end" });
         }
