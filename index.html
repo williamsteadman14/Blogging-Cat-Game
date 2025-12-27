@@ -68,16 +68,30 @@
       border-radius: 6px;
       cursor: pointer;
       margin-bottom: 16px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .side-box, .money-label {
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-weight: bold;
+      text-align: center;
+      min-width: 100px;
+    }
+
+    .money-label {
+      background: #111;
+      color: #fff;
+    }
+
+    #moneyAmount {
+      color: #f5c542; /* gold color */
     }
 
     .side-box {
       background: #000;
-      color: #fff;
-      padding: 12px;
-      text-align: center;
-      font-weight: bold;
-      border-radius: 4px;
-      font-size: 0.9rem;
+      color: #f5c542;
     }
 
     #gameUI {
@@ -85,35 +99,15 @@
       margin-top: 80px;
     }
 
-    .layout {
-      display: flex;
-      gap: 16px;
-    }
-
-    .sidebar {
-      width: 160px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
     .money-ui {
       position: fixed;
       top: 16px;
       right: 24px;
-      background: #111;
-      color: #f5c542;
-      padding: 10px 14px;
-      border-radius: 8px;
-      font-weight: bold;
-      display: none;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
       z-index: 9999;
-    }
-
-    .money-ui span {
-      margin-left: 6px;
-      color: #fff;
     }
 
     .money-float {
@@ -131,86 +125,128 @@
   </style>
 </head>
 <body>
-  <div class="money-ui" id="moneyUI">💰<span id="moneyAmount">$0.00</span></div>
+  <div class="money-ui" id="moneyUI">
+    <div class="money-label">💰 <span id="moneyAmount">$0.00</span></div>
+    <div class="side-box">Upgrades</div>
+    <div class="side-box">Shop</div>
+  </div>
 
   <div class="blog-container" id="blogContainer">
     <h1>The Boring Cat Blog</h1>
     <div class="subtitle">sleep • suffering • small amounts of money</div>
 
-    <div class="post">
-      <div class="post-title">Where to Find the Best Catnip (Trust Me)</div>
-      <div class="post-meta">Posted by Cat • 3:12 AM • no comments</div>
-      <div class="post-content">
-        Everyone keeps asking me where I get my catnip. The truth is I don’t.
-        I once saw some behind the convenience store but there was a dog there
-        and I panicked. If you absolutely must try, I recommend checking under
-        couches, in forgotten drawers, or stealing it emotionally from other
-        cats. Do not ask me how that works. I am tired.
-      </div>
-    </div>
+    <button class="post-button" id="firstPostButton" data-mode="first">✎ Post Blog</button>
 
-    <button class="play-button" id="startButton">▶ Start Blogging</button>
-
-    <div id="gameUI">
-      <div class="layout">
-        <div style="flex:1"></div>
-        <div class="sidebar">
-          <div class="side-box">Upgrades</div>
-          <div class="side-box">Shop</div>
-        </div>
-      </div>
-
-      <button class="post-button" id="postButton">✎ Post Blog</button>
-    </div>
   </div>
 
   <audio id="kachingSound" src="cash-register-kaching-376867 (1).mp3"></audio>
 
   <script>
-    let money = 0;
+    document.addEventListener("DOMContentLoaded", () => {
+      let money = 0;
+      let isTyping = false;
 
-    const startButton = document.getElementById("startButton");
-    const gameUI = document.getElementById("gameUI");
-    const postButton = document.getElementById("postButton");
-    const moneyUI = document.getElementById("moneyUI");
-    const moneyAmount = document.getElementById("moneyAmount");
-    const kaching = document.getElementById("kachingSound");
-    const blogContainer = document.getElementById("blogContainer");
+      const moneyUI = document.getElementById("moneyUI");
+      const moneyAmount = document.getElementById("moneyAmount");
+      const kaching = document.getElementById("kachingSound");
+      const blogContainer = document.getElementById("blogContainer");
 
-    startButton.addEventListener("click", () => {
-      gameUI.style.display = "block";
-      startButton.textContent = "Writing…";
-      startButton.disabled = true;
+      function earnMoney(amount) {
+        money += amount;
+        moneyAmount.textContent = `$${money.toFixed(2)}`;
+        moneyUI.style.display = "flex";
+        kaching.currentTime = 0;
+        kaching.play();
+      }
 
-      setTimeout(() => {
-        gameUI.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 100);
-    });
+      async function typeBlog(post, titleText, bodyText, metaText) {
+        const title = document.createElement("div");
+        title.className = "post-title";
+        const meta = document.createElement("div");
+        meta.className = "post-meta";
+        meta.textContent = metaText;
+        const content = document.createElement("div");
+        content.className = "post-content";
 
-    postButton.addEventListener("click", (e) => {
-      const amountEarned = 0.2;
-      money += amountEarned;
-      moneyAmount.textContent = `$${money.toFixed(2)}`;
-      moneyUI.style.display = "block";
+        const caret = document.createElement("span");
+        caret.className = "caret";
 
-      startButton.textContent = "Posted";
-      postButton.textContent = "✎ Write New Blog";
+        post.appendChild(title);
+        post.appendChild(meta);
+        post.appendChild(content);
+        blogContainer.appendChild(post);
 
-      // Play kaching sound
-      kaching.currentTime = 0;
-      kaching.play();
+        setTimeout(() => post.scrollIntoView({ behavior: "smooth", block: "start" }), 200);
 
-      // Create floating text
-      const floatText = document.createElement('div');
-      floatText.className = 'money-float';
-      floatText.style.left = (e.clientX - blogContainer.offsetLeft) + 'px';
-      floatText.style.top = (e.clientY - blogContainer.offsetTop) + 'px';
-      floatText.textContent = `+$${amountEarned.toFixed(2)}`;
-      blogContainer.appendChild(floatText);
+        async function typeText(element, text) {
+          element.textContent = "";
+          element.appendChild(caret);
+          for (let char of text) {
+            caret.remove();
+            element.textContent += char;
+            element.appendChild(caret);
+            await new Promise(r => setTimeout(r, 30));
+          }
+          caret.remove();
+        }
 
-      setTimeout(() => {
-        blogContainer.removeChild(floatText);
-      }, 1500);
+        await typeText(title, titleText);
+        await typeText(content, bodyText);
+      }
+
+      blogContainer.addEventListener("click", async (e) => {
+        if (!e.target.classList.contains("post-button")) return;
+        const postButton = e.target;
+        if (isTyping) return;
+
+        isTyping = true;
+        postButton.textContent = "Writing…";
+
+        const post = document.createElement("div");
+        post.className = "post";
+
+        if (postButton.dataset.mode === "first") {
+          const titleText = "Where to Find the Best Catnip (Trust Me)";
+          const bodyText = "Everyone keeps asking me where I get my catnip. The truth is I don’t. I once saw some behind the convenience store but there was a dog there and I panicked. If you absolutely must try, I recommend checking under couches, in forgotten drawers, or stealing it emotionally from other cats. Do not ask me how that works. I am tired.";
+          await typeBlog(post, titleText, bodyText, "Posted by Cat • 3:12 AM • no comments");
+          earnMoney(0.2);
+          postButton.textContent = "Posted";
+          postButton.disabled = true;
+
+          const newWriteButton = document.createElement("button");
+          newWriteButton.className = "post-button";
+          newWriteButton.textContent = "✎ Write New Blog";
+          newWriteButton.dataset.mode = "write";
+          newWriteButton.dataset.final = "true"; // mark as final
+          newWriteButton.disabled = false;
+          blogContainer.appendChild(newWriteButton);
+          newWriteButton.scrollIntoView({ behavior: "smooth", block: "end" });
+        } else if (postButton.dataset.mode === "write") {
+          const titleText = "Where I Sat Today";
+          const bodyText = "Today I sat on the back of the couch where the fabric is a little thinner and smells like the sun. It was uncomfortable at first, but I stayed anyway because leaving would mean admitting I chose wrong. After a while, the discomfort faded and I forgot why I was there, which is usually how things work out for me.";
+          const metaText = "Posted by Cat • 3:41 AM • no comments";
+          await typeBlog(post, titleText, bodyText, metaText);
+          postButton.textContent = "✎ Post Blog";
+          postButton.dataset.mode = "post";
+        } else if (postButton.dataset.mode === "post") {
+          earnMoney(0.2);
+          postButton.textContent = "Posted";
+          postButton.disabled = true;
+
+          const newWriteButton = document.createElement("button");
+          newWriteButton.className = "post-button";
+          newWriteButton.textContent = "✎ Write New Blog";
+          newWriteButton.dataset.mode = "write";
+          // Disable final button immediately
+          if (postButton.dataset.final === "true") {
+            newWriteButton.disabled = true;
+          }
+          blogContainer.appendChild(newWriteButton);
+          newWriteButton.scrollIntoView({ behavior: "smooth", block: "end" });
+        }
+
+        isTyping = false;
+      });
     });
   </script>
 </body>
